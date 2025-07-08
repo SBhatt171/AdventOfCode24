@@ -1,9 +1,10 @@
 my_dict = {}
 removal_items = []
 tracker = []
+
 def read(my_dict):
     global removal_items
-    with open("Day2", "r") as fobj:
+    with open("data.txt", "r") as fobj:
         text = fobj.readlines()
         for i in range (len(text)):
             if text[i] == "\n":
