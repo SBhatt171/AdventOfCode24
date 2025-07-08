@@ -1,78 +1,53 @@
 master = []
 
 def list_creation(master):
-    with open("data.txt","r") as fobj:
+    with open("Day2", "r") as fobj:
         data = fobj.readlines()
         for i in data:
-            temp = i.split(" ")
-            temp_list = []
-            for j in temp:
-                temp_list.append(int(j))
-            master.append(temp_list)
+            temp = i.strip().split()
+            master.append(list(map(int, temp)))
 
-def Salvage(report):
-    isSafe = True
-    isAscending = True
-    isAcceptable = True
+def is_safe(report):
+    if len(report) < 2:
+        return False
 
+    increasing = report[0] < report[1]
+    for i in range(len(report) - 1):
+        diff = report[i + 1] - report[i]
+
+        if not (1 <= abs(diff) <= 3):
+            return False
+
+        if increasing and diff < 0:
+            return False
+        if not increasing and diff > 0:
+            return False
+
+    return True
+
+def salvage(report):
     for k in range(len(report)):
-        isAscending = True
-        i = report.copy()
-        i.pop(k)
-        if (i[0] > i[1]):
-            isAscending = False
-
-        for j in range(len(i)-2):
-            if (isAscending == False):
-                if (i[j] < i[j + 1]):
-                    isAcceptable = False
-            elif (i[j] > i[j + 1]):
-                isAcceptable = False
-
-            if (isAcceptable == True):
-                isAcceptable = (1 <= abs(i[j] - i[j + 1]) <= 3)
-
-        if(isAcceptable == True):
-            print(report, "is Truly salvagable", isAcceptable)
+        new_report = report[:k] + report[k+1:]
+        if is_safe(new_report):
+            print(report, "is Truly salvagable")
             return True
-
-    print(report, "is salvagable",isAcceptable)
-    return isAcceptable
+    print(report, "is NOT salvagable")
+    return False
 
 def safe_counter(master):
     safe = 0
-    safeWithModification = 0
+    safe_with_modification = 0
 
-    for i in master:
-        isSafe = True
-        isAscending = True
-        isAcceptable = True
-
-        if (i[0] > i[1]):
-            isAscending = False
-
-        for j in range(len(i) - 1):
-            if (isAscending == False):
-                if (i[j] < i[j + 1]):
-                    isAcceptable = False
-            elif (i[j] > i[j + 1]):
-                isAcceptable = False
-
-            if (isAcceptable == True):
-                isAcceptable = (1 <= abs(i[j] - i[j + 1]) <= 3)
-
-        if (isAcceptable == True):
+    for report in master:
+        if is_safe(report):
             safe += 1
+        elif salvage(report):
+            safe_with_modification += 1
 
-        # if not acceptable try if we can make it acceptable
-        if(isAcceptable == False):
-            isSalvagable = Salvage(i)
-            if (isSalvagable == True):
-                safeWithModification += 1
+    print("Safe:", safe)
+    print("Safe With Modification (Dampener):", safe_with_modification)
+    print("Total Safe Reports (with Dampener):", safe + safe_with_modification)
 
-    print("safe:", safe)
-    print("Safe With Modification:", safeWithModification)
-
-
+# Run
 list_creation(master)
 safe_counter(master)
