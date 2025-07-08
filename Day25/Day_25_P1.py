@@ -17,7 +17,7 @@ def check_compatibilty():
     print(Comp_score)
 
 def read():
-    with open("Day2", "r") as fobj:
+    with open("data.txt", "r") as fobj:
         data = fobj.readlines()
         for i in range(0,len(data),8):
             group = data[i:i + 7]
